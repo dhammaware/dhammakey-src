@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SPDX-FileCopyrightText: 2026 Ujudhammo
+  SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
+  DhammaKey - a DhammaWare project
+  Homepage: https://dhammaware.org
+
+  Copyright (C) 2026 Ujudhammo.
+
+  TERMS OF USE AND NONCOMMERCIAL COMMITMENT:
+  This software is offered as dana (a free gift) to serve the community, to
+  support study and research, and to help spread the Dhamma. You may use, read,
+  study, modify and contribute improvements to this source code for
+  noncommercial purposes.
+
+  PROHIBITED: copying, packaging, redistributing or using this source code or
+  any derivative work for commercial purposes, for sale, or for any fee.
+
+  The full, legally binding terms are in the LICENSE file at the project root.
+  Third-party components keep their own licenses; see THIRD-PARTY-NOTICES.txt.
+
+  THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT
+  SHALL THE AUTHOR BE LIABLE FOR ANY DAMAGES ARISING FROM ITS USE.
+-->
+<!--
+  Bộ cài DhammaKey cho Windows 7 SP1 → Windows 11 (WiX Toolset v4/v5)
+
+  Biên dịch:
+    wix build DhammaKey.wxs -arch x64 -d Arch=x64 -d BinX64=..\..\build-x64\platform\windows\Release -d BinX86=..\..\build-x86\platform\windows\Release -d SettingsDir=..\..\build-x64\settings\Release -o DhammaKey-x64.msi
+    wix build DhammaKey.wxs -arch x86 -d Arch=x86 -d BinX86=..\..\build-x86\platform\windows\Release -o DhammaKey-x86.msi
+
+  Bản x64 cài cả DLL 64-bit (cho ứng dụng 64-bit) và DLL 32-bit (cho ứng dụng 32-bit).
+  Gỡ cài đặt: Settings → Apps, hoặc Control Panel → Programs and Features.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!-- Số phiên bản: sửa ở đây (cùng lúc với CMakeLists.txt gốc) -->
+  <?define DkVersion = "0.3.34" ?>
+  <Package Name="DhammaKey"
+           Manufacturer="DhammaWare"
+           Version="$(var.DkVersion)"
+           UpgradeCode="7E1C2B94-3A5D-4F6B-8C21-D4E9A0B7C301"
+           Language="1033"
+           Codepage="1252"
+           InstallerVersion="500"
+           Scope="perMachine">
+
+    <!-- Summary Information (chuột phải tệp .msi > Properties > Details) -->
+    <SummaryInformation Description="DhammaKey $(var.DkVersion)"
+                        Keywords="DhammaKey, input method, Vietnamese, Pali, Sanskrit" />
+
+    <!-- 0.3.21: gỡ hẳn bản cũ TRƯỚC khi chép tệp (afterInstallInitialize), nhận cả bản cùng số phiên bản.
+         Bài học 15/11/2026: cài 0.3.20 dựng lại đè lên 0.3.20 → Windows Installer giữ DLL/EXE cũ
+         (cùng số phiên bản) và để lại hai mục DhammaKey. -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of DhammaKey is already installed."
+                  AllowSameVersionUpgrades="yes" Schedule="afterInstallInitialize" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Từ Windows 7 SP1 (6.1, ServicePackLevel 1) -->
+    <Launch Condition="Installed OR (VersionNT &gt; 601) OR (VersionNT = 601 AND ServicePackLevel &gt;= 1)"
+            Message="DhammaKey requires Windows 7 SP1 or later." />
+
+    <Icon Id="DhammaKeyIcon" SourceFile="..\..\platform\windows\res\dhammakey.ico" />
+    <Property Id="ARPPRODUCTICON" Value="DhammaKeyIcon" />
+    <!-- DisplayIcon (0.3.21): ARPPRODUCTICON chỉ Settings > Apps đọc; các công cụ gỡ khác (Microsoft PC Manager…)
+         đọc giá trị DisplayIcon trong khoá Uninstall — xem component ArpIcon bên dưới. -->
+    <!-- Thông tin ở Settings > Apps và Programs and Features (doc "Ký số và thông tin tệp", duyệt 15/11/2026).
+         Chỉ chữ ASCII vì bảng mã MSI là 1252. Đường dẫn trang con chờ website chốt. -->
+    <Property Id="ARPURLINFOABOUT" Value="https://dhammaware.org" />
+    <Property Id="ARPURLUPDATEINFO" Value="https://dhammaware.org" />
+    <Property Id="ARPHELPLINK" Value="https://dhammaware.org" />
+    <!-- ARPCONTACT bỏ từ 0.3.29: tên người sáng lập không phải thông tin công khai (theo yêu cầu 15/11/2026) -->
+    <Property Id="ARPCOMMENTS" Value="Breaking barriers - typing beyond" />
+
+    <?if $(var.Arch) = x64 ?>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="DhammaKey">
+        <Component Id="DllX64" Bitness="always64">
+          <File Id="DllX64" Source="$(var.BinX64)\DhammaKey.dll" KeyPath="yes" />
+        </Component>
+        <!-- Cửa sổ cài đặt (Qt) + lối tắt trong Start menu -->
+        <Component Id="ArpIcon" Guid="5B0C6E52-9D47-4A1F-8E3B-2C7A91D4F610" Bitness="always64">
+          <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]"
+                         Name="DisplayIcon" Type="string" Value="[INSTALLFOLDER]DhammaKeySettings.exe,0" KeyPath="yes" />
+        </Component>
+        <Component Id="SettingsExe" Bitness="always64">
+          <File Id="SettingsExe" Source="$(var.SettingsDir)\DhammaKeySettings.exe" KeyPath="yes">
+            <!-- Lối tắt thường (không "advertise"), lấy biểu tượng ngay trong DhammaKeySettings.exe.
+                 Lối tắt kiểu advertise trỏ tới biểu tượng cất trong %WINDIR%\Installer nên trên
+                 Windows 10/11 hay hiện trắng. Tên giữ "DhammaKey" vì bảng mã MSI (1252) không có chữ Việt. -->
+            <Shortcut Id="SettingsShortcut" Directory="ProgramMenuFolder" Name="DhammaKey"
+                      Description="DhammaKey Control Panel" WorkingDirectory="INSTALLFOLDER"
+                      Advertise="no" />
+          </File>
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER32" Name="DhammaKey">
+        <Component Id="DllX86" Bitness="always32">
+          <File Id="DllX86" Source="$(var.BinX86)\DhammaKey.dll" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+    <?else?>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER32" Name="DhammaKey">
+        <Component Id="DllX86">
+          <File Id="DllX86" Source="$(var.BinX86)\DhammaKey.dll" KeyPath="yes" />
+        </Component>
+        <Component Id="ArpIcon" Guid="8F2D4A17-6C3E-4B90-A5D1-73E0B6C2984E">
+          <RegistryValue Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductCode]"
+                         Name="DisplayIcon" Type="string" Value="[INSTALLFOLDER32]DhammaKey.dll,0" KeyPath="yes" />
+        </Component>
+      </Directory>
+    </StandardDirectory>
+    <?endif?>
+
+    <!-- Cài kèm font Charis SIL (đủ dấu Pali/Sanskrit) — đặt file .ttf vào installer\windows\fonts\ -->
+    <!--
+    <StandardDirectory Id="FontsFolder">
+      <Component Id="FontCharis" Permanent="no">
+        <File Id="CharisRegular" Source="fonts\CharisSIL-Regular.ttf" TrueType="yes" />
+      </Component>
+    </StandardDirectory>
+    -->
+
+    <Feature Id="Main" Title="DhammaKey" Level="1">
+      <?if $(var.Arch) = x64 ?>
+      <ComponentRef Id="DllX64" />
+      <ComponentRef Id="SettingsExe" />
+      <!-- Thư viện Qt và VC++ runtime đi kèm (windeployqt đã chép sẵn vào thư mục này) -->
+      <Files Directory="INSTALLFOLDER" Include="$(var.SettingsDir)\**">
+        <Exclude Files="$(var.SettingsDir)\DhammaKeySettings.exe" />
+      </Files>
+      <?endif?>
+      <ComponentRef Id="DllX86" />
+      <ComponentRef Id="ArpIcon" />
+    </Feature>
+
+    <!-- Đăng ký / gỡ đăng ký bộ gõ với Windows (gọi DllRegisterServer / DllUnregisterServer) -->
+    <?if $(var.Arch) = x64 ?>
+    <CustomAction Id="RegX64" Directory="INSTALLFOLDER" Execute="deferred" Impersonate="no" Return="check"
+                  ExeCommand="&quot;[System64Folder]regsvr32.exe&quot; /s &quot;[#DllX64]&quot;" />
+    <CustomAction Id="UnregX64" Directory="INSTALLFOLDER" Execute="deferred" Impersonate="no" Return="ignore"
+                  ExeCommand="&quot;[System64Folder]regsvr32.exe&quot; /s /u &quot;[#DllX64]&quot;" />
+    <?endif?>
+    <CustomAction Id="RegX86" Directory="INSTALLFOLDER32" Execute="deferred" Impersonate="no" Return="check"
+                  ExeCommand="&quot;[SystemFolder]regsvr32.exe&quot; /s &quot;[#DllX86]&quot;" />
+    <CustomAction Id="UnregX86" Directory="INSTALLFOLDER32" Execute="deferred" Impersonate="no" Return="ignore"
+                  ExeCommand="&quot;[SystemFolder]regsvr32.exe&quot; /s /u &quot;[#DllX86]&quot;" />
+
+    <!-- Sau khi cài xong: thêm DhammaKey vào danh sách bàn phím của người đang dùng máy, đặt làm
+         mặc định, và hỏi có tắt UniKey / EVKey / GoTiengViet… không.
+         Phải chạy bằng tài khoản người dùng (Impersonate="yes", không phải SYSTEM) nên đặt sau
+         InstallFinalize; asyncNoWait để bộ cài đóng ngay, không chờ người dùng trả lời. -->
+    <?if $(var.Arch) = x64 ?>
+    <CustomAction Id="SetupUser" Directory="INSTALLFOLDER" Execute="immediate" Impersonate="yes" Return="asyncNoWait"
+                  ExeCommand="&quot;[System64Folder]rundll32.exe&quot; &quot;[#DllX64]&quot;,DkSetupUser" />
+    <?else?>
+    <CustomAction Id="SetupUser" Directory="INSTALLFOLDER32" Execute="immediate" Impersonate="yes" Return="asyncNoWait"
+                  ExeCommand="&quot;[SystemFolder]rundll32.exe&quot; &quot;[#DllX86]&quot;,DkSetupUser" />
+    <?endif?>
+
+    <!-- Gỡ hẳn (không phải nâng cấp): trả lại bộ gõ mặc định cũ và xoá dòng tự chạy DkLogon của người đang gỡ.
+         Chạy immediate + Impersonate trước InstallInitialize, lúc tệp DLL còn trên máy. -->
+    <?if $(var.Arch) = x64 ?>
+    <CustomAction Id="CleanUser" Directory="INSTALLFOLDER" Execute="immediate" Impersonate="yes" Return="ignore"
+                  ExeCommand="&quot;[System64Folder]rundll32.exe&quot; &quot;[#DllX64]&quot;,DkUninstallUser" />
+    <?else?>
+    <CustomAction Id="CleanUser" Directory="INSTALLFOLDER32" Execute="immediate" Impersonate="yes" Return="ignore"
+                  ExeCommand="&quot;[SystemFolder]rundll32.exe&quot; &quot;[#DllX86]&quot;,DkUninstallUser" />
+    <?endif?>
+
+    <InstallExecuteSequence>
+      <Custom Action="CleanUser" Before="InstallInitialize" Condition="REMOVE=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE" />
+      <?if $(var.Arch) = x64 ?>
+      <Custom Action="UnregX64" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot;" />
+      <Custom Action="RegX64" After="InstallFiles" Condition="NOT REMOVE" />
+      <?endif?>
+      <Custom Action="UnregX86" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot;" />
+      <Custom Action="RegX86" After="InstallFiles" Condition="NOT REMOVE" />
+      <Custom Action="SetupUser" After="InstallFinalize" Condition="NOT REMOVE" />
+      <!-- 0.3.21: luôn nhắc khởi động lại sau khi cài/nâng cấp — bộ gõ đã nạp sẵn trong các ứng dụng đang mở
+           chỉ đổi sang bản mới sau khi khởi động lại (theo yêu cầu: người dùng không biết chuyện này).
+           Hộp nhắc do Windows Installer hiện, chữ theo ngôn ngữ Windows; bộ cài .exe 0.4.0 sẽ nhắc bằng lời Việt/Anh. -->
+      <ScheduleReboot After="SetupUser" Condition="NOT REMOVE" />
+    </InstallExecuteSequence>
+  </Package>
+</Wix>

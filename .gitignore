@@ -1,0 +1,25 @@
+# Thư mục biên dịch và tệp sinh ra khi build (không đưa lên kho)
+build/
+build-*/
+x64/
+x86/
+Debug/
+Release/
+.vs/
+*.user
+*.suo
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.idb
+*.wixpdb
+*.msi
+*.sha256
+*.log
+CMakeCache.txt
+CMakeFiles/
+cmake-build-*/
+__pycache__/
+# Bản ghi cập nhật theo từng phiên bản (sinh khi phát hành, không đưa lên kho)
+installer/windows/latest-*.json

@@ -1,0 +1,81 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Ujudhammo
+ * SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+ *
+ * DhammaKey - a DhammaWare project
+ * Homepage: https://dhammaware.org
+ *
+ * Copyright (C) 2026 Ujudhammo.
+ *
+ * TERMS OF USE AND NONCOMMERCIAL COMMITMENT:
+ * This software is offered as dana (a free gift) to serve the community, to
+ * support study and research, and to help spread the Dhamma. You may use, read,
+ * study, modify and contribute improvements to this source code for
+ * noncommercial purposes.
+ *
+ * PROHIBITED: copying, packaging, redistributing or using this source code or
+ * any derivative work for commercial purposes, for sale, or for any fee.
+ *
+ * The full, legally binding terms are in the LICENSE file at the project root.
+ * Third-party components keep their own licenses; see THIRD-PARTY-NOTICES.txt.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DAMAGES ARISING FROM ITS USE.
+ */
+
+#include <winver.h>
+#include "resource.h"
+
+// Biểu tượng hồ sơ bộ gõ (Windows hiện ở ô ngôn ngữ cạnh đồng hồ): phím ṃ chữ to, sát mép,
+// để ở 16–24 px không bị nhỏ. Ứng dụng và lối tắt vẫn dùng res/dhammakey.ico (logo gốc).
+IDI_DHAMMAKEY ICON "res/dhammakey-indicator.ico"
+IDR_MENU_LOGO RCDATA "res/menu-logo.png"
+
+// Tray icon (bộ file DhammaKey-tray, 14/11/2026) — thứ tự theo DK_TRAY_ID trong resource.h
+200 ICON "res/tray/latin-vi-light.ico"
+201 ICON "res/tray/latin-vi-dark.ico"
+202 ICON "res/tray/latin-pali-light.ico"
+203 ICON "res/tray/latin-pali-dark.ico"
+204 ICON "res/tray/latin-off-light.ico"
+205 ICON "res/tray/latin-off-dark.ico"
+206 ICON "res/tray/latin-conflict-light.ico"
+207 ICON "res/tray/latin-conflict-dark.ico"
+208 ICON "res/tray/native-vi-light.ico"
+209 ICON "res/tray/native-vi-dark.ico"
+210 ICON "res/tray/native-pali-light.ico"
+211 ICON "res/tray/native-pali-dark.ico"
+212 ICON "res/tray/native-off-light.ico"
+213 ICON "res/tray/native-off-dark.ico"
+214 ICON "res/tray/native-conflict-light.ico"
+215 ICON "res/tray/native-conflict-dark.ico"
+
+// Thông tin tệp (chuột phải -> Properties -> Details), theo bảng trong doc "Ký số và thông tin tệp" (duyệt 15/11/2026).
+// Số phiên bản lấy từ CMakeLists.txt gốc (DK_VER_*, DK_VERSION) — không còn sửa tay ở đây.
+// Chỉ dùng chữ ASCII: (C), (TM) thay cho ký hiệu.
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION DK_VER_MAJOR,DK_VER_MINOR,DK_VER_PATCH,0
+ PRODUCTVERSION DK_VER_MAJOR,DK_VER_MINOR,DK_VER_PATCH,0
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_DLL
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "DhammaWare"
+      VALUE "FileDescription", "DhammaKey Input Method"
+      VALUE "FileVersion", DK_VERSION
+      VALUE "InternalName", "DhammaKey.dll"
+      VALUE "LegalCopyright", "Copyright (C) 2026 Ujudhammo"
+      VALUE "LegalTrademarks", "DhammaKey(TM) and DhammaWare(TM) are trademarks of DhammaWare"
+      VALUE "OriginalFilename", "DhammaKey.dll"
+      VALUE "ProductName", "DhammaKey"
+      VALUE "ProductVersion", DK_VERSION
+      VALUE "Comments", "Breaking barriers - typing beyond / Free (dana) software by DhammaWare - https://dhammaware.org"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1200
+  END
+END

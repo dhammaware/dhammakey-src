@@ -1,0 +1,58 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Ujudhammo
+ * SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+ *
+ * DhammaKey - a DhammaWare project
+ * Homepage: https://dhammaware.org
+ *
+ * Copyright (C) 2026 Ujudhammo.
+ *
+ * TERMS OF USE AND NONCOMMERCIAL COMMITMENT:
+ * This software is offered as dana (a free gift) to serve the community, to
+ * support study and research, and to help spread the Dhamma. You may use, read,
+ * study, modify and contribute improvements to this source code for
+ * noncommercial purposes.
+ *
+ * PROHIBITED: copying, packaging, redistributing or using this source code or
+ * any derivative work for commercial purposes, for sale, or for any fee.
+ *
+ * The full, legally binding terms are in the LICENSE file at the project root.
+ * Third-party components keep their own licenses; see THIRD-PARTY-NOTICES.txt.
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. IN NO EVENT
+ * SHALL THE AUTHOR BE LIABLE FOR ANY DAMAGES ARISING FROM ITS USE.
+ */
+
+#include <winver.h>
+// Qt tự lấy biểu tượng tên IDI_ICON1 làm biểu tượng cửa sổ
+IDI_ICON1 ICON "../platform/windows/res/dhammakey.ico"
+
+// Thông tin tệp (chuột phải → Properties → Details). Số phiên bản lấy từ CMakeLists.txt gốc.
+// Chỉ dùng chữ ASCII: trình biên dịch .rc không đọc chắc chắn UTF-8 (nên (C), (TM) thay cho ©, ™).
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION DK_VER_MAJOR,DK_VER_MINOR,DK_VER_PATCH,0
+ PRODUCTVERSION DK_VER_MAJOR,DK_VER_MINOR,DK_VER_PATCH,0
+ FILEOS VOS_NT_WINDOWS32
+ FILETYPE VFT_APP
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040904B0"
+    BEGIN
+      VALUE "CompanyName", "DhammaWare"
+      VALUE "FileDescription", "DhammaKey Control Panel"
+      VALUE "FileVersion", DK_VERSION
+      VALUE "LegalCopyright", "Copyright (C) 2026 Ujudhammo"
+      VALUE "LegalTrademarks", "DhammaKey(TM) and DhammaWare(TM) are trademarks of DhammaWare"
+      VALUE "ProductName", "DhammaKey"
+      VALUE "ProductVersion", DK_VERSION
+      VALUE "OriginalFilename", "DhammaKeySettings.exe"
+      VALUE "InternalName", "DhammaKeySettings.exe"
+      VALUE "Comments", "Breaking barriers - typing beyond / Free (dana) software by DhammaWare - https://dhammaware.org"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x0409, 1200
+  END
+END

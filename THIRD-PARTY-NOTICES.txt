@@ -1,0 +1,48 @@
+DhammaKey - Third-party licenses and credits
+============================================
+
+DhammaKey itself is Copyright (C) 2026 Ujudhammo and is licensed under the
+PolyForm Noncommercial License 1.0.0 (see LICENSE.txt). The components below
+are NOT covered by that license: each keeps its own license and copyright.
+
+----------------------------------------------------------------------------
+1. Qt 5.15.2 (Qt Core, Qt Gui, Qt Widgets, platform and style plugins)
+----------------------------------------------------------------------------
+Copyright (C) The Qt Company Ltd. and other contributors.
+License: GNU Lesser General Public License version 3 (LGPL-3.0).
+Full text: licenses\LGPL-3.0-only.txt, which refers to the GNU General Public
+License version 3: licenses\GPL-3.0-only.txt.
+
+- DhammaKey uses Qt as separate, unmodified dynamic libraries (Qt5*.dll and
+  the plugin folders next to DhammaKeySettings.exe). You may replace them with
+  your own build of Qt 5.15 that is interface-compatible.
+- Source code of Qt 5.15.2:
+  https://download.qt.io/archive/qt/5.15/5.15.2/single/
+  You may also ask for a copy of that source code through
+  https://dhammaware.org for at least three years after this release.
+- Qt itself contains third-party code (for example zlib, libpng, PCRE2,
+  HarfBuzz, double-conversion, md4c), each under its own license, listed at
+  https://doc.qt.io/qt-5/licenses-used-in-qt.html
+
+----------------------------------------------------------------------------
+2. Microsoft Visual C++ runtime (vcruntime140.dll, msvcp140.dll and related)
+----------------------------------------------------------------------------
+Copyright (C) Microsoft Corporation.
+Redistributed under the Microsoft Visual Studio license terms for
+distributable code.
+
+----------------------------------------------------------------------------
+3. Fonts used to draw the tray icons
+----------------------------------------------------------------------------
+The letters on the DhammaKey tray icons were drawn from these fonts and
+converted to outlines (no font file is installed):
+- Inter (Copyright The Inter Project Authors) - SIL Open Font License 1.1
+- Poppins (Copyright Indian Type Foundry) - SIL Open Font License 1.1
+- Noto Sans Myanmar, Noto Sans CJK (Copyright The Noto Project Authors,
+  Copyright Adobe) - SIL Open Font License 1.1
+- Loma (Thai Linux Working Group) - under its own license
+Full text of the SIL Open Font License 1.1: licenses\OFL-1.1.txt
+
+----------------------------------------------------------------------------
+DhammaKey(TM) and DhammaWare(TM) are trademarks of DhammaWare.
+https://dhammaware.org
